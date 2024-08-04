@@ -3,11 +3,9 @@
     "thumbnail": "",
     "id": "com_swordmaiden_xivdeck",
     "name": "XIVDeck",
-    "tags": ["Utilities"],
-    "minimum-app-version": "1.5.0-beta.6",
+    "tags": ["Utilities", "FFXIV"],
+    "minimum-app-version": "1.5.0",
     "app-version": "1.5.0-beta.6",
-
-    
-    "description": "A implementation of the XIVDeck Client for use in Final Fantasy XIV with Dalamud Plugins: https://github.com/KazWolfe/XIVDeck/tree/main",
-    "short-description": "FFXIV XIVDeck Client"
+    "author": "Astrid Swordmaiden",
+    "github": "https://github.com/SilentSwordmaiden/StreamController-XIVDeck-Plugin"
 }
