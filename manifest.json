@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "thumbnail": "",
+    "thumbnail": "assets/xivdeck.png",
     "id": "com_swordmaiden_xivdeck",
     "name": "XIVDeck",
     "tags": ["Utilities", "FFXIV"],
