@@ -126,7 +126,7 @@ class XIVDeckPlugin(PluginBase):
         # Register plugin
         self.register(
             plugin_name="XIVDeck",
-            github_repo="https://github.com/SilentSwordmaiden/XIVDeckPlugin",
+            github_repo="https://github.com/SilentSwordmaiden/StreamController-XIVDeck-Plugin",
             plugin_version="1.0.0",
             app_version="1.5.0-beta.6"
         )
