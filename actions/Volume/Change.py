@@ -49,12 +49,6 @@ class Change(ActionBase):
 
         settings = self.get_settings()
 
-        saved_volume = settings.get("volume")
-        if saved_volume is None:
-            saved_volume = ""
-        else:
-            saved_volume = "Set: {}%".format(saved_volume)
-
         if settings.get("channel") is not None:
             channel_name = settings.get("channel")
 
@@ -69,6 +63,15 @@ class Change(ActionBase):
 
             except Exception as e:
                 vol_state = "N/A"
+
+        saved_volume = settings.get("volume")
+        if saved_volume is None or saved_volume == 0:
+            saved_volume = vol_state
+            vol_state = None
+        elif saved_volume > 0:
+            saved_volume = "+{}%".format(saved_volume)
+        elif saved_volume < 0:
+            saved_volume = "{}%".format(saved_volume)
 
         self.set_media(media_path=image)
         self.set_top_label(channel_name)

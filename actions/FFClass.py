@@ -68,7 +68,7 @@ class FFClass(ActionBase):
         image = None
 
         settings = self.get_settings()
-        class_id = settings["class_id"]
+        class_id = settings.get("class_id")
         class_name = None
         class_abbr = None
 

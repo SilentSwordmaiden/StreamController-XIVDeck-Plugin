@@ -3,7 +3,6 @@ from src.backend.PluginManager.ActionBase import ActionBase
 from src.backend.DeckManagement.DeckController import DeckController
 from src.backend.PageManagement.Page import Page
 from src.backend.PluginManager.PluginBase import PluginBase
-from time import sleep
 
 # Import gtk
 import gi
@@ -25,9 +24,6 @@ class Action(ActionBase):
         settings = self.get_settings()
         action_id = settings["action_id"]
         action_type = settings["action_type"]
-        action_name = settings["action_type"]
-        action_icon = settings['action_icon']
-        print(f"action_type {action_type} action_id {action_id} action_name {action_name} action_icon {action_icon}")
 
         if action_id is not None:
             try:

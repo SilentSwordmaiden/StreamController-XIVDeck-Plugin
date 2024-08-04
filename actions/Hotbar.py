@@ -4,7 +4,6 @@ from src.backend.DeckManagement.DeckController import DeckController
 from src.backend.PageManagement.Page import Page
 from src.backend.PluginManager.PluginBase import PluginBase
 import json
-from time import sleep
 
 # Import gtk
 import gi
@@ -66,24 +65,25 @@ class Hotbar(ActionBase):
                 self.update_button()
     def update_button(self):
         image = None
-        hotbar_string = ""
-        slot_string = ""
+        hotbar_string = None
+        slot_string = None
 
-        hotbar_id = self.get_value('hotbar') - 1
-        slot_id = self.get_value('slot') - 1
+        hotbar_id = self.get_value('hotbar')
+        slot_id = self.get_value('slot')
 
-        if hotbar_id >= 0 and slot_id >= 0:
-            try:
-                query_json = self.plugin_base.backend.query_xivdeck("/hotbar/{}/{}".format(hotbar_id, slot_id))
-                hotbar_item = json.loads(query_json)
-                image = self.plugin_base.backend.get_icon(hotbar_item['iconId'])
-                self.set_center_label(None)
-            except Exception as e:
-                print("Hotbar.update_button error: {}".format(e))
-                self.set_center_label('Offline')
+        if hotbar_id is not None and slot_id is not None:
+            if hotbar_id >= 1 and slot_id >= 1:
+                try:
+                    query_json = self.plugin_base.backend.query_xivdeck("/hotbar/{}/{}".format(hotbar_id-1, slot_id-1))
+                    hotbar_item = json.loads(query_json)
+                    image = self.plugin_base.backend.get_icon(hotbar_item['iconId'])
+                    self.set_center_label(None)
+                except Exception as e:
+                    print("Hotbar.update_button error: {}".format(e))
+                    self.set_center_label('Offline')
 
-            hotbar_string = "Hotbar: {}".format(hotbar_id + 1)
-            slot_string = "Slot: {}".format(slot_id + 1)
+                hotbar_string = "Hotbar: {}".format(hotbar_id)
+                slot_string = "Slot: {}".format(slot_id)
 
         self.set_media(media_path=image)
         self.set_top_label(hotbar_string)
