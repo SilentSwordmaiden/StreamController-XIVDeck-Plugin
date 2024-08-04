@@ -76,6 +76,7 @@ class Emote(ActionBase):
             self.emote.connect("notify::selected", self.on_emote_value_changed)
 
         self.emote.set_selected(stored_emote_row)
+        self.on_emote_value_changed(self.emote)
 
         available_emotes_log_modes = Gtk.StringList()
         available_emotes_log_modes.append("default")
@@ -88,6 +89,7 @@ class Emote(ActionBase):
 
         if settings.get("emote_log") is not None:
             self.emote_log.set_selected(settings["emote_log"])
+        self.on_emote_log_changed(self.emote_log)
 
         return [self.emote, self.emote_log]
 
@@ -103,7 +105,7 @@ class Emote(ActionBase):
         image = None
 
         settings = self.get_settings()
-        emote_id = settings["emote_id"]
+        emote_id = settings.get("emote_id")
         emote_name = None
         emote_title = None
 
@@ -116,13 +118,13 @@ class Emote(ActionBase):
         self.set_top_label(emote_title)
         self.set_bottom_label(emote_name)
 
-    def on_emote_log_changed(self, logmode, status):
+    def on_emote_log_changed(self, logmode, status=None):
         emote_log = logmode.get_selected()
         settings = self.get_settings()
         settings["emote_log"] = emote_log
         self.set_settings(settings)
 
-    def on_emote_value_changed(self, emote, status):
+    def on_emote_value_changed(self, emote, status=None):
         emote_name = emote.get_selected_item().get_string()
         if emote_name != "None":
             emote_dict = self.plugin_base.backend.get_emotes(emote_name)

@@ -24,9 +24,6 @@ class Action(ActionBase):
         settings = self.get_settings()
         action_id = settings["action_id"]
         action_type = settings["action_type"]
-        action_name = settings["action_type"]
-        action_icon = settings['action_icon']
-        print(f"action_type {action_type} action_id {action_id} action_name {action_name} action_icon {action_icon}")
 
         if action_id is not None:
             try:

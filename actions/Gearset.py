@@ -68,6 +68,7 @@ class Gearset(ActionBase):
 
         if not is_offline:
             self.gearset.connect("notify::selected", self.on_gearset_value_changed)
+            self.on_gearset_value_changed(self.gearset)
 
         self.gearset.set_selected(stored_gearset_row)
 
@@ -81,6 +82,8 @@ class Gearset(ActionBase):
 
         if settings.get("glam_id") is not None:
             self.glam.set_selected(settings["glam_id"])
+
+        self.on_glam_value_changed(self.glam)
 
         return [self.gearset, self.glam]
 
@@ -96,13 +99,13 @@ class Gearset(ActionBase):
         image = None
 
         settings = self.get_settings()
-        gearset_id = settings["gearset_id"]
+        gearset_id = settings.get("gearset_id")
         gearset_name = None
         gearset_title = None
 
         if gearset_id is not None:
             gearset_name = settings["gearset"].split(":")[1].strip()
-            glam_id = settings["glam_id"]
+            glam_id = settings.get("glam_id")
             if glam_id is not None:
                 gearset_title = "Glam #{}".format(glam_id)
             else:
@@ -113,7 +116,7 @@ class Gearset(ActionBase):
         self.set_top_label(gearset_title)
         self.set_bottom_label(gearset_name)
 
-    def on_glam_value_changed(self, glam, status):
+    def on_glam_value_changed(self, glam, status=None):
         glam_name = glam.get_selected()
         settings = self.get_settings()
         if glam_name > 0:
@@ -123,7 +126,7 @@ class Gearset(ActionBase):
         self.set_settings(settings)
         self.update_button()
 
-    def on_gearset_value_changed(self, gearset, status):
+    def on_gearset_value_changed(self, gearset, status=None):
         gearset_name = gearset.get_selected_item().get_string()
         if gearset_name != "None":
             gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)

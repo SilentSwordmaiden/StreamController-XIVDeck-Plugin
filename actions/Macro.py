@@ -45,7 +45,6 @@ class Macro(ActionBase):
         macro_name = settings.get("macro_name")
         macro_icon = settings.get("macro_icon")
 
-        print(macro_icon)
         image = self.plugin_base.backend.get_icon(macro_icon)
         self.set_media(media_path=image)
 
@@ -74,9 +73,11 @@ class Macro(ActionBase):
 
         macro.set_selected(macro_default_row)
 
+        self.on_macro_value_changed(macro)
+
         return [macro]
 
-    def on_macro_value_changed(self, macro, status):
+    def on_macro_value_changed(self, macro, status=None):
         settings = self.get_settings()
 
         macro_id = macro.get_selected_item().get_string().split(":")[0]

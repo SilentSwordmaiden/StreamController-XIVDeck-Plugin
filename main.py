@@ -15,7 +15,6 @@ from .actions.Macro import Macro
 from .actions.Volume.Mute import Mute
 from .actions.Volume.Set import Set
 from .actions.Volume.Change import Change
-from .actions.Helper.IconID import IconID
 
 from .internal.WebsocketEventListener import WebsocketEvent
 
@@ -75,14 +74,6 @@ class XIVDeckPlugin(PluginBase):
             action_name = "Equid Gearset",
         )
         self.add_action_holder(self.gearset_action_holder)
-
-        self.helper_iconid_action_holder = ActionHolder(
-            plugin_base = self,
-            action_base =IconID,
-            action_id = "com_swordmaiden_xivdeck::HelperIconID",
-            action_name = "Get IconID of hotbar slot",
-        )
-        self.add_action_holder(self.helper_iconid_action_holder)
 
         self.macro_action_holder = ActionHolder(
             plugin_base = self,
