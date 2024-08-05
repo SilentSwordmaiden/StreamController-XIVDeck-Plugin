@@ -32,6 +32,7 @@ class XIVDeckPlugin(PluginBase):
             action_base = Command,
             action_id = "com_swordmaiden_xivdeck::Command",
             action_name = "Execute Command",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.command_action_holder)
 
@@ -40,6 +41,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Hotbar,
             action_id = "com_swordmaiden_xivdeck::Hotbar",
             action_name = "Press Hotbar Key",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.hotbar_action_holder)
 
@@ -48,6 +50,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =FFClass,
             action_id = "com_swordmaiden_xivdeck::FFClass",
             action_name = "Switch to Class",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.ff_class_action_holder)
 
@@ -56,6 +59,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Action,
             action_id = "com_swordmaiden_xivdeck::Action",
             action_name = "Perform Action",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.action_action_holder)
 
@@ -64,6 +68,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Emote,
             action_id = "com_swordmaiden_xivdeck::Emote",
             action_name = "Play Emote",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.emote_action_holder)
 
@@ -72,6 +77,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Gearset,
             action_id = "com_swordmaiden_xivdeck::Gearset",
             action_name = "Equid Gearset",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.gearset_action_holder)
 
@@ -80,6 +86,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Macro,
             action_id = "com_swordmaiden_xivdeck::Macro",
             action_name = "Execute Macro",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.macro_action_holder)
 
@@ -88,6 +95,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Mute,
             action_id = "com_swordmaiden_xivdeck::VolumeMute",
             action_name = "Volume: Mute Audio",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.volume_mute_action_holder)
 
@@ -96,6 +104,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Set,
             action_id = "com_swordmaiden_xivdeck::VolumeSet",
             action_name = "Volume: Set to fixed Value",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.volume_set_action_holder)
 
@@ -104,6 +113,7 @@ class XIVDeckPlugin(PluginBase):
             action_base =Change,
             action_id = "com_swordmaiden_xivdeck::VolumeChange",
             action_name = "Volume: Lower or raise",
+            action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.volume_change_action_holder)
 
