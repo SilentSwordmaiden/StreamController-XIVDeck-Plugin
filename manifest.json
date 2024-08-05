@@ -3,6 +3,12 @@
     "thumbnail": "assets/xivdeck.png",
     "id": "com_swordmaiden_xivdeck",
     "name": "XIVDeck",
+    "descriptions": {
+        "en_US": "XIVDeck-API integration for the Final Fantasy XIV dalamud plugin"
+    },
+    "short-descriptions": {
+        "en_US": "XIVDeck for Final Fantasy XIV"
+    },
     "tags": ["Utilities", "FFXIV"],
     "minimum-app-version": "1.5.0",
     "app-version": "1.5.0-beta.6",
