@@ -204,7 +204,7 @@ class Backend(BackendBase):
         return self.all_macros
 
     def get_headers(self):
-        if self.headers == None:
+        if self.headers is None:
             try:
                 self.headers = asyncio.run(self.init_xivdeck(self.ws_uri))
                 print("Requested XIVDeck auth header: {}".format(self.headers))
