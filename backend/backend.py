@@ -7,6 +7,7 @@ import os
 from PIL import Image
 from streamcontroller_plugin_tools import BackendBase
 
+
 class Backend(BackendBase):
     host = "127.0.0.1"
     port = "37984"
