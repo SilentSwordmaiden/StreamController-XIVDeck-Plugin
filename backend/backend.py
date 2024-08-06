@@ -146,7 +146,6 @@ class Backend(BackendBase):
 
                 image.save(image_path)
             except Exception as e:
-                print("get_icon error: {}".format(e))
                 image_path = None
 
         return image_path
