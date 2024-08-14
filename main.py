@@ -115,7 +115,10 @@ class XIVDeckPlugin(PluginBase):
             action_base =Change,
             action_id = "com_swordmaiden_xivdeck::VolumeChange",
             action_name = "Volume: Lower or raise",
-            action_support={Input.Key: ActionInputSupport.SUPPORTED},
+            action_support={
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.SUPPORTED,
+            },
         )
         self.add_action_holder(self.volume_change_action_holder)
 

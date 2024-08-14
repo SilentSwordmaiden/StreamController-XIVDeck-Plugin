@@ -1,15 +1,12 @@
-# Import StreamController modules
+from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionBase import ActionBase
-from src.backend.DeckManagement.DeckController import DeckController
-from src.backend.PageManagement.Page import Page
-from src.backend.PluginManager.PluginBase import PluginBase
 import json
 
 import gi
+from GtkHelper.GtkHelper import ScaleRow
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from GtkHelper.GtkHelper import ScaleRow
 from gi.repository import Gtk, Adw
 
 
@@ -31,6 +28,26 @@ class Change(ActionBase):
 
     def on_ready(self):
         self.update_button()
+
+    def event_callback(self, event, data):
+        settings = self.get_settings()
+        channel = settings.get("channel")
+        volume = abs(settings.get("volume"))
+
+        was_successful = None
+        if event == Input.Dial.Events.SHORT_UP:
+            was_successful = self.plugin_base.backend.mute_volume(channel)
+
+        elif event == Input.Dial.Events.TURN_CW:
+            was_successful = self.plugin_base.backend.change_volume(channel, volume)
+
+        elif event == Input.Dial.Events.TURN_CCW:
+            was_successful = self.plugin_base.backend.change_volume(channel, -volume)
+
+        if was_successful is None:
+            self.set_center_label('Offline')
+        else:
+            self.update_button()
 
     async def websocket_event(self, event, message):
         if message is not None:
