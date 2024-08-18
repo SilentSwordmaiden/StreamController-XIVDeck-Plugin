@@ -33,6 +33,7 @@ class Change(ActionBase):
         self.update_button()
 
     async def websocket_event(self, event, message):
+        print("Change: Got event")
         if message is not None:
             if message == "disconnect":
                 self.set_center_label('Offline')
@@ -40,6 +41,7 @@ class Change(ActionBase):
                 self.set_center_label(None)
                 self.update_button()
             elif json.loads(message)['messageType'] == "volumeUpdate":
+                print("Change: Got volumeUpdate")
                 self.update_button()
 
     def update_button(self):
