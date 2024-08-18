@@ -30,6 +30,7 @@ class WebsocketEvent(EventHolder):
         self._loop()
 
     def _loop(self):
+        count_tries = 0
         while True:
             ffxiv_running = False
             for connection in psutil.net_connections(kind='inet'):
@@ -56,7 +57,9 @@ class WebsocketEvent(EventHolder):
                     if self.plugin_base.backend.headers is not None:
                         self.plugin_base.backend.forget_headers()
                     self.trigger_event("disconnect")
-            else:
+            elif count_tries < 10:
+                # only trigger a disconnect event the first 10 tries to tell the buttons on startup
+                count_tries += 1
                 self.trigger_event("disconnect")
 
             sleep(1)
