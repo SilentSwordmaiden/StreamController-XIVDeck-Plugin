@@ -57,6 +57,7 @@ class Set(ActionBase):
 
         if settings.get("channel") is not None:
             channel_name = settings.get("channel")
+            image = self.plugin_base.backend.get_icon(66331)
 
             try:
                 channel_dict = json.loads(self.plugin_base.backend.query_xivdeck("/volume/{}".format(channel_name)))
@@ -77,7 +78,7 @@ class Set(ActionBase):
 
     def get_config_rows(self) -> list:
         available_channels = Gtk.StringList()
-        channels_list = {}
+        channels_list = ("Master", "BackgroundMusic", "SoundEffects", "Voice", "System", "Ambient", "Performance")
         try:
             channels_list = json.loads(self.plugin_base.backend.query_xivdeck("/volume"))
             self.set_center_label(None)

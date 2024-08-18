@@ -45,8 +45,9 @@ class Macro(ActionBase):
         macro_name = settings.get("macro_name")
         macro_icon = settings.get("macro_icon")
 
-        image = self.plugin_base.backend.get_icon(macro_icon)
-        self.set_media(media_path=image)
+        if macro_icon is not None:
+            image = self.plugin_base.backend.get_icon(macro_icon)
+            self.set_media(media_path=image)
 
         self.set_top_label("Macro")
         self.set_bottom_label(macro_name)
@@ -55,25 +56,33 @@ class Macro(ActionBase):
         settings = self.get_settings()
         all_macros = self.plugin_base.backend.get_macros(True)
         available_macros = Gio.ListStore.new(Gtk.StringObject)
-        row_counter = 0
+        has_macros = False
         macro_default_row = 0
-        for current_macro_dict in all_macros:
-            current_macro_id = current_macro_dict['id']
-            current_macro_name = current_macro_dict['name']
-            if current_macro_name == "":
-                current_macro_name = "<no name>"
-            macro_row_string = "{}: {}".format(current_macro_id, current_macro_name)
-            available_macros.append(Gtk.StringObject.new(macro_row_string))
-            if str(current_macro_id) == settings.get('macro_id'):
-                macro_default_row = row_counter
-            row_counter += 1
+
+        if all_macros is not None:
+            row_counter = 0
+            for current_macro_dict in all_macros:
+                if not has_macros:
+                    has_macros = True
+                current_macro_id = current_macro_dict['id']
+                current_macro_name = current_macro_dict['name']
+                if current_macro_name == "":
+                    current_macro_name = "<no name>"
+                macro_row_string = "{}: {}".format(current_macro_id, current_macro_name)
+                available_macros.append(Gtk.StringObject.new(macro_row_string))
+                if str(current_macro_id) == settings.get('macro_id'):
+                    macro_default_row = row_counter
+                row_counter += 1
+        else:
+            available_macros.append(Gtk.StringObject.new("Offline"))
+            has_macros = False
 
         macro = Adw.ComboRow(title="Select available macro", model=available_macros)
-        macro.connect("notify::selected-item", self.on_macro_value_changed)
-
         macro.set_selected(macro_default_row)
 
-        self.on_macro_value_changed(macro)
+        if has_macros:
+            macro.connect("notify::selected-item", self.on_macro_value_changed)
+            self.on_macro_value_changed(macro)
 
         return [macro]
 

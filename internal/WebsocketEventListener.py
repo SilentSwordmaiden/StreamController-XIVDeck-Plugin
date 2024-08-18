@@ -48,10 +48,11 @@ class WebsocketEvent(EventHolder):
                     self.trigger_event("connect")
                     try:
                         while True:
-                            self.trigger_event(websocket.recv())
-                    except Exception as e:
+                            websocket_event = websocket.recv()
+                            self.trigger_event(websocket_event)
+                    except Exception:
                         continue
-                except Exception as e:
+                except Exception:
                     if self.plugin_base.backend.headers is not None:
                         self.plugin_base.backend.forget_headers()
                     self.trigger_event("disconnect")

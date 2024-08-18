@@ -34,27 +34,43 @@ class FFClass(ActionBase):
 
     def get_config_rows(self) -> list:
         available_classes = Gtk.StringList()
-        available_classes.append("None")
 
         settings = self.get_settings()
         current_class = settings.get('class_id')
 
-        i = 1
+        all_classes = self.plugin_base.backend.get_classes()
+
+        has_classes = False
         stored_class_row = 0
-        for class_dict in self.plugin_base.backend.get_classes():
-            class_name = class_dict['name']
-            class_id = class_dict['id']
-            available_classes.append(class_name)
-            if class_id == current_class:
-                stored_class_row = i
-            i += 1
-        self.ff_class = Adw.ComboRow(title='Select Class', model=available_classes)
+        if all_classes is not None:
+            if len(all_classes) > 0:
+                has_classes = True
+                i = 0
+                for class_dict in all_classes:
+                    class_name = class_dict['name']
+                    class_id = class_dict['id']
+                    available_classes.append(class_name)
+                    if class_id == current_class:
+                        stored_class_row = i
+                    i += 1
+            else:
+                available_classes.append("None")
+        else:
+            current_class_name = settings.get('class_name')
+            if current_class_name is not None:
+                available_classes.append("(Offline) {}".format(current_class_name))
+            else:
+                self.set_top_label("Class")
+                available_classes.append("Offline")
 
-        self.ff_class.connect("notify::selected", self.on_ff_class_value_changed)
+        ff_class = Adw.ComboRow(title='Select Class', model=available_classes)
 
-        self.ff_class.set_selected(stored_class_row)
+        ff_class.set_selected(stored_class_row)
 
-        return [self.ff_class]
+        if has_classes:
+            ff_class.connect("notify::selected", self.on_ff_class_value_changed)
+
+        return [ff_class]
 
     async def websocket_event(self, event, message):
         if message is not None:

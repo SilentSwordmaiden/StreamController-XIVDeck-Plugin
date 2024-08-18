@@ -74,13 +74,14 @@ class Change(ActionBase):
             saved_volume = "{}%".format(saved_volume)
 
         self.set_media(media_path=image)
+
         self.set_top_label(channel_name)
         self.set_center_label(vol_state)
         self.set_bottom_label(saved_volume)
 
     def get_config_rows(self) -> list:
         available_channels = Gtk.StringList()
-        channels_list = {}
+        channels_list = ("Master", "BackgroundMusic", "SoundEffects", "Voice", "System", "Ambient", "Performance")
         try:
             channels_list = json.loads(self.plugin_base.backend.query_xivdeck("/volume"))
             self.set_center_label(None)

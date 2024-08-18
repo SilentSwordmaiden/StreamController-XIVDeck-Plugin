@@ -152,36 +152,47 @@ class Backend(BackendBase):
         return image_path
 
     def get_classes(self, name=None):
+        try:
+            all_classes = json.loads(self.query_xivdeck("/classes/available"))
+            self.ff_classes_dict = sorted(all_classes, key=lambda d: d['name'])
+        except Exception:
+            pass
+
         if name is None:
-            self.ff_classes_dict = json.loads(self.query_xivdeck("/classes/available"))
-            return sorted(self.ff_classes_dict, key=lambda d: d['name'])
+            return self.ff_classes_dict
         else:
-            if self.ff_classes_dict is None:
-                self.ff_classes_dict = json.loads(self.query_xivdeck("/classes/available"))
             for ff_class in self.ff_classes_dict:
                 if ff_class['name'] == name:
                     return ff_class
             return []
 
-    def get_emotes(self, name=None):
+    def get_emotes(self, name=None, refresh=False):
+        if self.emotes_dict is None or refresh:
+            available_emotes = []
+            try:
+                available_emotes = json.loads(self.query_xivdeck("/action/Emote"))
+                self.emotes_dict = sorted(available_emotes, key=lambda d: d['name'])
+            except Exception:
+                pass
+
         if name is None:
-            self.emotes_dict = json.loads(self.query_xivdeck("/action/Emote"))
-            return sorted(self.emotes_dict, key=lambda d: d['name'])
+            return self.emotes_dict
         else:
-            if self.emotes_dict is None:
-                self.emotes_dict = json.loads(self.query_xivdeck("/action/Emote"))
             for emote in self.emotes_dict:
                 if emote['name'] == name:
                     return emote
             return []
 
     def get_gearsets(self, name=None):
+        try:
+            all_gearsets = json.loads(self.query_xivdeck("/action/GearSet"))
+            self.gearsets_dict = sorted(all_gearsets, key=lambda d: d['name'])
+        except Exception:
+            pass
+
         if name is None:
-            self.gearsets_dict = json.loads(self.query_xivdeck("/action/GearSet"))
-            return sorted(self.gearsets_dict, key=lambda d: d['name'])
+            return self.gearsets_dict
         else:
-            if self.gearsets_dict is None:
-                self.gearsets_dict = json.loads(self.query_xivdeck("/action/GearSet"))
             for gearset in self.gearsets_dict:
                 if gearset['name'] == name:
                     return gearset
@@ -211,6 +222,7 @@ class Backend(BackendBase):
                 print("Requested XIVDeck auth header: {}".format(self.headers))
             except Exception as e:
                 raise Exception("Can't request XIVDeck auth header from {}: {}".format(self.ws_uri, e))
+
         return self.headers
 
     def forget_headers(self):

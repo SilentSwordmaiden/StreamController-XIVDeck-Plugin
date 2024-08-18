@@ -35,20 +35,24 @@ class Hotbar(ActionBase):
         hotbars.append("None")
         for i in range(1, 11):
             hotbars.append("Hotbar {}".format(i))
-        self.hotbar = Adw.ComboRow(title='Select Hotbar', model=hotbars)
+        hotbar = Adw.ComboRow(title='Select Hotbar', model=hotbars)
 
         slots = Gtk.StringList()
         slots.append("None")
         for i in range(1, 13):
             slots.append("Slot {}".format(i))
-        self.slot = Adw.ComboRow(title='Select Slot', model=slots)
+        slot = Adw.ComboRow(title='Select Slot', model=slots)
 
-        self.hotbar.connect("notify::selected", self.on_hotbar_value_changed)
-        self.slot.connect("notify::selected", self.on_slot_value_changed)
+        settings = self.get_settings()
+        if settings.get('hotbar') is not None:
+            hotbar.set_selected(settings.get('hotbar'))
+        if settings.get('slot') is not None:
+            slot.set_selected(settings.get('slot'))
 
-        self.load_config_values()
+        hotbar.connect("notify::selected", self.on_hotbar_value_changed)
+        slot.connect("notify::selected", self.on_slot_value_changed)
 
-        return [self.hotbar, self.slot]
+        return [hotbar, slot]
 
     def get_value(self, entry):
         settings = self.get_settings()
@@ -63,6 +67,7 @@ class Hotbar(ActionBase):
                 self.update_button()
             elif json.loads(message)['type'] == "Hotbar":
                 self.update_button()
+
     def update_button(self):
         image = None
         hotbar_string = None
@@ -78,9 +83,9 @@ class Hotbar(ActionBase):
                     hotbar_item = json.loads(query_json)
                     image = self.plugin_base.backend.get_icon(hotbar_item['iconId'])
                     self.set_center_label(None)
-                except Exception as e:
-                    print("Hotbar.update_button error: {}".format(e))
+                except Exception:
                     self.set_center_label('Offline')
+                    image = self.get_value('skill_icon')
 
                 hotbar_string = "Hotbar: {}".format(hotbar_id)
                 slot_string = "Slot: {}".format(slot_id)
@@ -89,21 +94,30 @@ class Hotbar(ActionBase):
         self.set_top_label(hotbar_string)
         self.set_bottom_label(slot_string)
 
-    def load_config_values(self):
-        settings = self.get_settings()
-        if settings.get('hotbar') is not None:
-            self.hotbar.set_selected(settings.get('hotbar'))
-        if settings.get('slot') is not None:
-            self.slot.set_selected(settings.get('slot'))
-
     def on_hotbar_value_changed(self, hotbar, status):
         settings = self.get_settings()
         settings["hotbar"] = hotbar.get_selected()
+        settings = self.add_icon_id(settings)
         self.set_settings(settings)
         self.update_button()
 
     def on_slot_value_changed(self, slot, status):
         settings = self.get_settings()
         settings["slot"] = slot.get_selected()
+        settings = self.add_icon_id(settings)
         self.set_settings(settings)
         self.update_button()
+
+    def add_icon_id(self, settings):
+        hotbar_id = settings.get('hotbar')
+        slot_id = settings.get('slot')
+        try:
+            query_json = self.plugin_base.backend.query_xivdeck("/hotbar/{}/{}".format(hotbar_id - 1, slot_id - 1))
+            hotbar_item = json.loads(query_json)
+            settings["skill_icon"] = hotbar_item['iconId']
+            print("Set icon")
+        except Exception as e:
+            print("Don't set icon: {}".format(e))
+            pass
+
+        return settings
