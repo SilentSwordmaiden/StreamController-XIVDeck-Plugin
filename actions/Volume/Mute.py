@@ -31,7 +31,6 @@ class Mute(ActionBase):
         self.update_button()
 
     async def websocket_event(self, event, message):
-        print("Mute: Got event")
         if message is not None:
             if message == "disconnect":
                 self.set_center_label('Offline')
@@ -39,7 +38,6 @@ class Mute(ActionBase):
                 self.set_center_label(None)
                 self.update_button()
             elif json.loads(message)['messageType'] == "volumeUpdate":
-                print("Mute: Got volumeUpdate")
                 self.update_button()
 
     def update_button(self):
