@@ -200,7 +200,11 @@ class Backend(BackendBase):
 
     def get_actions(self, refresh=False):
         if self.all_actions is None or refresh:
-            self.all_actions = json.loads(self.query_xivdeck("/action"))
+            try:
+                available_actions = json.loads(self.query_xivdeck("/action"))
+                self.all_actions = available_actions
+            except Exception:
+                pass
         return self.all_actions
 
     def get_macros(self, refresh=False):
