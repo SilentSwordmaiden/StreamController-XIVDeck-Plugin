@@ -78,7 +78,7 @@ class XIVDeckPlugin(PluginBase):
             plugin_base = self,
             action_base =Gearset,
             action_id = "com_swordmaiden_xivdeck::Gearset",
-            action_name = "Equid Gearset",
+            action_name = "Equip Gearset",
             action_support={Input.Key: ActionInputSupport.SUPPORTED},
         )
         self.add_action_holder(self.gearset_action_holder)
