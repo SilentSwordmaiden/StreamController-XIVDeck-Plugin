@@ -210,12 +210,15 @@ class Backend(BackendBase):
     def get_macros(self, refresh=False):
         if self.all_macros is None or refresh:
             available_macros = []
-            for i in range(0,100):
-                current_macro = json.loads(self.query_xivdeck("/action/Macro/{}".format(i)))
-                if current_macro['iconId'] != 0:
-                    available_macros.append(current_macro)
+            try:
+                all_macros = json.loads(self.query_xivdeck("/action/Macro"))
+                for current_macro in all_macros:
+                    if current_macro['iconId'] != 0:
+                        available_macros.append(current_macro)
 
-            self.all_macros = available_macros
+                self.all_macros = available_macros
+            except Exception:
+                pass
 
         return self.all_macros
 

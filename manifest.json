@@ -4,7 +4,7 @@
     "id": "com_swordmaiden_xivdeck",
     "name": "XIVDeck",
     "descriptions": {
-        "en_US": "XIVDeck-API integration for the Final Fantasy XIV dalamud plugin"
+        "en_US": "XIVDeck-API integration for the Final Fantasy XIV dalamud plugin. Requires XIVDeck >= v0.3.20"
     },
     "short-descriptions": {
         "en_US": "XIVDeck for Final Fantasy XIV"
