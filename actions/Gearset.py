@@ -44,48 +44,44 @@ class Gearset(ActionBase):
         available_gearsets = Gtk.StringList()
 
         settings = self.get_settings()
-        current_gear = settings.get('gearset_id')
+        current_gearset_name = settings.get('gearset')
+        has_gearset = False
+        all_gearsets = self.plugin_base.backend.get_gearsets()
 
-        i = 0
-        stored_gearset_row = 0
-        is_offline = False
-        try:
-            all_gearsets_unsorted = json.loads(self.plugin_base.backend.query_xivdeck("/action/GearSet"))
-
-            all_gearsets = sorted(all_gearsets_unsorted, key=lambda d: d['name'])
+        if all_gearsets is None:
+            if current_gearset_name is not None:
+                available_gearsets.append("(Offline) {}".format(current_gearset_name))
+            else:
+                available_gearsets.append("Offline")
+        else:
+            if current_gearset_name is not None:
+                available_gearsets.append("(Current) {}".format(current_gearset_name))
             for gearset_dict in all_gearsets:
+                if not has_gearset:
+                    has_gearset = True
                 gearset_name = gearset_dict['name']
-                gearset_id = gearset_dict['id']
                 available_gearsets.append(gearset_name)
-                if gearset_id == current_gear:
-                    stored_gearset_row = i
-                i += 1
-        except Exception as e:
-            available_gearsets.append("Offline")
-            is_offline = True
 
-        self.gearset = Adw.ComboRow(title='Select Gearset', model=available_gearsets)
+        gearset = Adw.ComboRow(title='Select Gearset', model=available_gearsets)
 
-        if not is_offline:
-            self.gearset.connect("notify::selected", self.on_gearset_value_changed)
-            self.on_gearset_value_changed(self.gearset)
-
-        self.gearset.set_selected(stored_gearset_row)
+        if has_gearset:
+            gearset.connect("notify::selected", self.on_gearset_value_changed)
+            self.on_gearset_value_changed(gearset)
 
         available_glams = Gtk.StringList()
         available_glams.append("None")
         for i in range(1, 21):
             available_glams.append("Glam {}".format(i))
-        self.glam = Adw.ComboRow(title='Select Glam', model=available_glams)
+        glam = Adw.ComboRow(title='Select Glam', model=available_glams)
 
-        self.glam.connect("notify::selected", self.on_glam_value_changed)
+        glam.connect("notify::selected", self.on_glam_value_changed)
 
         if settings.get("glam_id") is not None:
-            self.glam.set_selected(settings["glam_id"])
+            glam.set_selected(settings["glam_id"])
 
-        self.on_glam_value_changed(self.glam)
+        self.on_glam_value_changed(glam)
 
-        return [self.gearset, self.glam]
+        return [gearset, glam]
 
     async def websocket_event(self, event, message):
         if message is not None:
@@ -128,16 +124,17 @@ class Gearset(ActionBase):
 
     def on_gearset_value_changed(self, gearset, status=None):
         gearset_name = gearset.get_selected_item().get_string()
-        if gearset_name != "None":
-            gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
-            gearset_id = gearset_dict['id']
-            gearset_icon_id = gearset_dict['iconId']
-        else:
-            gearset_icon_id = None
-            gearset_id = None
-        settings = self.get_settings()
-        settings["gearset"] = gearset_name
-        settings["gearset_id"] = gearset_id
-        settings["gearset_icon_id"] = gearset_icon_id
-        self.set_settings(settings)
-        self.update_button()
+        if not gearset_name.startswith('(Current) '):
+            if gearset_name != "None":
+                gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
+                gearset_id = gearset_dict['id']
+                gearset_icon_id = gearset_dict['iconId']
+            else:
+                gearset_icon_id = None
+                gearset_id = None
+            settings = self.get_settings()
+            settings["gearset"] = gearset_name
+            settings["gearset_id"] = gearset_id
+            settings["gearset_icon_id"] = gearset_icon_id
+            self.set_settings(settings)
+            self.update_button()

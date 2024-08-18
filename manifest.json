@@ -1,10 +1,10 @@
 {
-    "version": "1.0.0",
-    "thumbnail": "assets/xivdeck.png",
+    "version": "1.0.1",
+    "thumbnail": "assets/xivdeck_store_banner.png",
     "id": "com_swordmaiden_xivdeck",
     "name": "XIVDeck",
     "descriptions": {
-        "en_US": "XIVDeck-API integration for the Final Fantasy XIV dalamud plugin"
+        "en_US": "XIVDeck-API integration for the Final Fantasy XIV dalamud plugin.\n\nRequires XIVDeck >= v0.3.20"
     },
     "short-descriptions": {
         "en_US": "XIVDeck for Final Fantasy XIV"
