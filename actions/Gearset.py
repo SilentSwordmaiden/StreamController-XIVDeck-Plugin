@@ -45,7 +45,6 @@ class Gearset(ActionBase):
 
         settings = self.get_settings()
         current_gearset_name = settings.get('gearset')
-        stored_gearset_row = 0
         has_gearset = False
         all_gearsets = self.plugin_base.backend.get_gearsets()
 
@@ -64,8 +63,6 @@ class Gearset(ActionBase):
                 available_gearsets.append(gearset_name)
 
         gearset = Adw.ComboRow(title='Select Gearset', model=available_gearsets)
-
-        gearset.set_selected(stored_gearset_row)
 
         if has_gearset:
             gearset.connect("notify::selected", self.on_gearset_value_changed)
@@ -127,16 +124,17 @@ class Gearset(ActionBase):
 
     def on_gearset_value_changed(self, gearset, status=None):
         gearset_name = gearset.get_selected_item().get_string()
-        if gearset_name != "None":
-            gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
-            gearset_id = gearset_dict['id']
-            gearset_icon_id = gearset_dict['iconId']
-        else:
-            gearset_icon_id = None
-            gearset_id = None
-        settings = self.get_settings()
-        settings["gearset"] = gearset_name
-        settings["gearset_id"] = gearset_id
-        settings["gearset_icon_id"] = gearset_icon_id
-        self.set_settings(settings)
-        self.update_button()
+        if not gearset_name.startswith('(Current) '):
+            if gearset_name != "None":
+                gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
+                gearset_id = gearset_dict['id']
+                gearset_icon_id = gearset_dict['iconId']
+            else:
+                gearset_icon_id = None
+                gearset_id = None
+            settings = self.get_settings()
+            settings["gearset"] = gearset_name
+            settings["gearset_id"] = gearset_id
+            settings["gearset_icon_id"] = gearset_icon_id
+            self.set_settings(settings)
+            self.update_button()
