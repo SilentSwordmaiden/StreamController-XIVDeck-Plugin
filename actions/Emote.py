@@ -51,32 +51,26 @@ class Emote(ActionBase):
 
         settings = self.get_settings()
         current_emote = settings.get('emote_id')
+        current_emote_name = settings.get('emote_name')
 
-        i = 0
-        stored_emote_row = 0
         has_emotes = False
         all_emotes = self.plugin_base.backend.get_emotes(refresh=True)
 
         if all_emotes is not None:
+            if current_emote_name is not None:
+                available_emotes.append("(Current) {}".format(current_emote_name))
             for emote_dict in all_emotes:
                 if not has_emotes:
                     has_emotes = True
                 emote_name = emote_dict['name']
-                emote_id = emote_dict['id']
                 available_emotes.append(emote_name)
-                if emote_id == current_emote:
-                    stored_emote_row = i
-                i += 1
         else:
-            current_emote = settings.get('emote_name')
-            if current_emote is not None:
-                available_emotes.append("(Offline) {}".format(current_emote))
+            if current_emote_name is not None:
+                available_emotes.append("(Offline) {}".format(current_emote_name))
             else:
                 available_emotes.append("Offline")
 
         emote = Adw.ComboRow(title='Select Emote', model=available_emotes)
-
-        emote.set_selected(stored_emote_row)
 
         available_emotes_log_modes = Gtk.StringList()
         available_emotes_log_modes.append("default")
@@ -130,16 +124,17 @@ class Emote(ActionBase):
 
     def on_emote_value_changed(self, emote, status=None):
         emote_name = emote.get_selected_item().get_string()
-        if emote_name != "None":
-            emote_dict = self.plugin_base.backend.get_emotes(emote_name)
-            emote_id = emote_dict['id']
-            emote_icon_id = emote_dict['iconId']
-        else:
-            emote_icon_id = None
-            emote_id = None
-        settings = self.get_settings()
-        settings["emote_name"] = emote_name
-        settings["emote_id"] = emote_id
-        settings["emote_icon_id"] = emote_icon_id
-        self.set_settings(settings)
-        self.update_button()
+        if not emote_name.startswith('(Current) '):
+            if emote_name != "None":
+                emote_dict = self.plugin_base.backend.get_emotes(emote_name)
+                emote_id = emote_dict['id']
+                emote_icon_id = emote_dict['iconId']
+            else:
+                emote_icon_id = None
+                emote_id = None
+            settings = self.get_settings()
+            settings["emote_name"] = emote_name
+            settings["emote_id"] = emote_id
+            settings["emote_icon_id"] = emote_icon_id
+            self.set_settings(settings)
+            self.update_button()

@@ -54,13 +54,17 @@ class Macro(ActionBase):
 
     def get_config_rows(self) -> list:
         settings = self.get_settings()
+        saved_macro_name = settings.get('macro_name')
+        saved_macro_id = settings.get('macro_id')
         all_macros = self.plugin_base.backend.get_macros(True)
         available_macros = Gio.ListStore.new(Gtk.StringObject)
         has_macros = False
-        macro_default_row = 0
 
         if all_macros is not None:
-            row_counter = 0
+            if saved_macro_name is not None:
+                available_macros.append(Gtk.StringObject.new("(Current) {}: {}".format(
+                    saved_macro_id, saved_macro_name
+                )))
             for current_macro_dict in all_macros:
                 if not has_macros:
                     has_macros = True
@@ -70,15 +74,11 @@ class Macro(ActionBase):
                     current_macro_name = "<no name>"
                 macro_row_string = "{}: {}".format(current_macro_id, current_macro_name)
                 available_macros.append(Gtk.StringObject.new(macro_row_string))
-                if str(current_macro_id) == settings.get('macro_id'):
-                    macro_default_row = row_counter
-                row_counter += 1
         else:
             available_macros.append(Gtk.StringObject.new("Offline"))
             has_macros = False
 
         macro = Adw.ComboRow(title="Select available macro", model=available_macros)
-        macro.set_selected(macro_default_row)
 
         if has_macros:
             macro.connect("notify::selected-item", self.on_macro_value_changed)
@@ -88,21 +88,22 @@ class Macro(ActionBase):
 
     def on_macro_value_changed(self, macro, status=None):
         settings = self.get_settings()
+        selected_macro = macro.get_selected_item().get_string()
+        if not selected_macro.startswith('(Current) '):
+            macro_id = selected_macro.split(":")[0]
+            macro_name = None
+            macro_icon = None
 
-        macro_id = macro.get_selected_item().get_string().split(":")[0]
-        macro_name = None
-        macro_icon = None
+            all_available_macros = self.plugin_base.backend.get_macros()
 
-        all_available_macros = self.plugin_base.backend.get_macros()
+            for current_macro in all_available_macros:
+                if str(current_macro['id']) == macro_id:
+                    macro_name = current_macro['name']
+                    macro_icon = current_macro['iconId']
 
-        for current_macro in all_available_macros:
-            if str(current_macro['id']) == macro_id:
-                macro_name = current_macro['name']
-                macro_icon = current_macro['iconId']
+            settings["macro_id"] = macro_id
+            settings["macro_name"] = macro_name
+            settings["macro_icon"] = macro_icon
 
-        settings["macro_id"] = macro_id
-        settings["macro_name"] = macro_name
-        settings["macro_icon"] = macro_icon
-
-        self.set_settings(settings)
-        self.update_button()
+            self.set_settings(settings)
+            self.update_button()

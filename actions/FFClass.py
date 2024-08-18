@@ -37,12 +37,15 @@ class FFClass(ActionBase):
 
         settings = self.get_settings()
         current_class = settings.get('class_id')
+        current_class_name = settings.get('class_name')
 
         all_classes = self.plugin_base.backend.get_classes()
 
         has_classes = False
         stored_class_row = 0
         if all_classes is not None:
+            if current_class_name is not None:
+                available_classes.append("(Current) {}".format(current_class_name))
             if len(all_classes) > 0:
                 has_classes = True
                 i = 0
@@ -56,7 +59,6 @@ class FFClass(ActionBase):
             else:
                 available_classes.append("None")
         else:
-            current_class_name = settings.get('class_name')
             if current_class_name is not None:
                 available_classes.append("(Offline) {}".format(current_class_name))
             else:
@@ -99,19 +101,20 @@ class FFClass(ActionBase):
 
     def on_ff_class_value_changed(self, ff_class, status):
         class_name = ff_class.get_selected_item().get_string()
-        if class_name != "None":
-            class_dict = self.plugin_base.backend.get_classes(class_name)
-            class_id = class_dict['id']
-            class_icon_id = class_dict['iconId']
-            class_abbr = class_dict['abbreviation']
-        else:
-            class_abbr = None
-            class_icon_id = None
-            class_id = None
-        settings = self.get_settings()
-        settings["class_name"] = class_name
-        settings["class_id"] = class_id
-        settings["class_icon_id"] = class_icon_id
-        settings["class_abbr"] = class_abbr
-        self.set_settings(settings)
-        self.update_button()
+        if not class_name.startswith('(Current) '):
+            if class_name != "None":
+                class_dict = self.plugin_base.backend.get_classes(class_name)
+                class_id = class_dict['id']
+                class_icon_id = class_dict['iconId']
+                class_abbr = class_dict['abbreviation']
+            else:
+                class_abbr = None
+                class_icon_id = None
+                class_id = None
+            settings = self.get_settings()
+            settings["class_name"] = class_name
+            settings["class_id"] = class_id
+            settings["class_icon_id"] = class_icon_id
+            settings["class_abbr"] = class_abbr
+            self.set_settings(settings)
+            self.update_button()
