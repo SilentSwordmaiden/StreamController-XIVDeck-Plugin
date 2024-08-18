@@ -44,28 +44,24 @@ class Gearset(ActionBase):
         available_gearsets = Gtk.StringList()
 
         settings = self.get_settings()
+        current_gearset_name = settings.get('gearset')
         stored_gearset_row = 0
         has_gearset = False
         all_gearsets = self.plugin_base.backend.get_gearsets()
 
         if all_gearsets is None:
-            current_gearset_name = settings.get('gearset')
             if current_gearset_name is not None:
                 available_gearsets.append("(Offline) {}".format(current_gearset_name))
             else:
                 available_gearsets.append("Offline")
         else:
-            current_gear = settings.get('gearset_id')
-            i = 0
+            if current_gearset_name is not None:
+                available_gearsets.append("(Current) {}".format(current_gearset_name))
             for gearset_dict in all_gearsets:
                 if not has_gearset:
                     has_gearset = True
                 gearset_name = gearset_dict['name']
-                gearset_id = gearset_dict['id']
                 available_gearsets.append(gearset_name)
-                if gearset_id == current_gear:
-                    stored_gearset_row = i
-                i += 1
 
         gearset = Adw.ComboRow(title='Select Gearset', model=available_gearsets)
 
