@@ -39,23 +39,22 @@ class FFClass(ActionBase):
         current_class = settings.get('class_id')
         current_class_name = settings.get('class_name')
 
-        all_classes = self.plugin_base.backend.get_classes()
+        sorted_classes = sorted(self.plugin_base.backend.get_classes(), key=lambda d: d['sortOrder'])
 
         has_classes = False
-        stored_class_row = 0
-        if all_classes is not None:
+        if sorted_classes is not None:
             if current_class_name is not None:
                 available_classes.append("(Current) {}".format(current_class_name))
-            if len(all_classes) > 0:
+            if len(sorted_classes) > 0:
                 has_classes = True
-                i = 0
-                for class_dict in all_classes:
+                current_category = None
+                for class_dict in sorted_classes:
+                    categoryName = class_dict['categoryName']
+                    if categoryName != current_category:
+                        current_category = categoryName
+                        available_classes.append("> {} <".format(categoryName))
                     class_name = class_dict['name']
-                    class_id = class_dict['id']
-                    available_classes.append(class_name)
-                    if class_id == current_class:
-                        stored_class_row = i
-                    i += 1
+                    available_classes.append("\t{}".format(class_name))
             else:
                 available_classes.append("None")
         else:
@@ -66,8 +65,6 @@ class FFClass(ActionBase):
                 available_classes.append("Offline")
 
         ff_class = Adw.ComboRow(title='Select Class', model=available_classes)
-
-        ff_class.set_selected(stored_class_row)
 
         if has_classes:
             ff_class.connect("notify::selected", self.on_ff_class_value_changed)
@@ -100,8 +97,8 @@ class FFClass(ActionBase):
         self.set_bottom_label(class_name)
 
     def on_ff_class_value_changed(self, ff_class, status):
-        class_name = ff_class.get_selected_item().get_string()
-        if not class_name.startswith('(Current) '):
+        class_name = ff_class.get_selected_item().get_string().strip()
+        if not class_name.startswith('(Current) ') and not class_name.startswith('> '):
             if class_name != "None":
                 class_dict = self.plugin_base.backend.get_classes(class_name)
                 class_id = class_dict['id']
