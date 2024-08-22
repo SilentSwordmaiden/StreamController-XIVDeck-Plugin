@@ -36,10 +36,12 @@ class FFClass(ActionBase):
         available_classes = Gtk.StringList()
 
         settings = self.get_settings()
-        current_class = settings.get('class_id')
         current_class_name = settings.get('class_name')
 
-        sorted_classes = sorted(self.plugin_base.backend.get_classes(), key=lambda d: d['sortOrder'])
+        classes_list = self.plugin_base.backend.get_classes()
+        sorted_classes = None
+        if classes_list is not None:
+            sorted_classes = sorted(classes_list, key=lambda d: d['sortOrder'])
 
         has_classes = False
         if sorted_classes is not None:
