@@ -56,6 +56,8 @@ class Gearset(ActionBase):
         else:
             if current_gearset_name is not None:
                 available_gearsets.append("(Current) {}".format(current_gearset_name))
+
+            available_gearsets.append("Keep gearset equipped")
             for gearset_dict in all_gearsets:
                 if not has_gearset:
                     has_gearset = True
@@ -126,9 +128,14 @@ class Gearset(ActionBase):
         gearset_name = gearset.get_selected_item().get_string()
         if not gearset_name.startswith('(Current) '):
             if gearset_name != "None":
-                gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
-                gearset_id = gearset_dict['id']
-                gearset_icon_id = gearset_dict['iconId']
+                if gearset_name == "Keep gearset equipped":
+                    gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
+                    gearset_id = 0
+                    gearset_icon_id = #TODO
+                else:
+                    gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
+                    gearset_id = gearset_dict['id']
+                    gearset_icon_id = gearset_dict['iconId']
             else:
                 gearset_icon_id = None
                 gearset_id = None
