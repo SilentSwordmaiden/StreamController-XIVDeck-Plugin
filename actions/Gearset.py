@@ -102,7 +102,10 @@ class Gearset(ActionBase):
         gearset_title = None
 
         if gearset_id is not None:
-            gearset_name = settings["gearset"].split(":")[1].strip()
+            if settings["gearset"] == "Keep gearset equipped":
+                gearset_name = None
+            else:
+                gearset_name = settings["gearset"].split(":")[1].strip()
             glam_id = settings.get("glam_id")
             if glam_id is not None:
                 gearset_title = "Glam #{}".format(glam_id)
@@ -131,7 +134,7 @@ class Gearset(ActionBase):
                 if gearset_name == "Keep gearset equipped":
                     gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
                     gearset_id = 0
-                    gearset_icon_id = #TODO
+                    gearset_icon_id = 125
                 else:
                     gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
                     gearset_id = gearset_dict['id']
