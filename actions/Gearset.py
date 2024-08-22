@@ -56,6 +56,8 @@ class Gearset(ActionBase):
         else:
             if current_gearset_name is not None:
                 available_gearsets.append("(Current) {}".format(current_gearset_name))
+
+            available_gearsets.append("Keep gearset equipped")
             for gearset_dict in all_gearsets:
                 if not has_gearset:
                     has_gearset = True
@@ -100,7 +102,10 @@ class Gearset(ActionBase):
         gearset_title = None
 
         if gearset_id is not None:
-            gearset_name = settings["gearset"].split(":")[1].strip()
+            if settings["gearset"] == "Keep gearset equipped":
+                gearset_name = None
+            else:
+                gearset_name = settings["gearset"].split(":")[1].strip()
             glam_id = settings.get("glam_id")
             if glam_id is not None:
                 gearset_title = "Glam #{}".format(glam_id)
@@ -126,9 +131,13 @@ class Gearset(ActionBase):
         gearset_name = gearset.get_selected_item().get_string()
         if not gearset_name.startswith('(Current) '):
             if gearset_name != "None":
-                gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
-                gearset_id = gearset_dict['id']
-                gearset_icon_id = gearset_dict['iconId']
+                if gearset_name == "Keep gearset equipped":
+                    gearset_id = 0
+                    gearset_icon_id = 125
+                else:
+                    gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
+                    gearset_id = gearset_dict['id']
+                    gearset_icon_id = gearset_dict['iconId']
             else:
                 gearset_icon_id = None
                 gearset_id = None
