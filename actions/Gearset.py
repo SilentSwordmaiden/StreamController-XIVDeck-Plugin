@@ -132,7 +132,6 @@ class Gearset(ActionBase):
         if not gearset_name.startswith('(Current) '):
             if gearset_name != "None":
                 if gearset_name == "Keep gearset equipped":
-                    gearset_dict = self.plugin_base.backend.get_gearsets(gearset_name)
                     gearset_id = 0
                     gearset_icon_id = 125
                 else:
